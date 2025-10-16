@@ -1,0 +1,38 @@
+use college_db
+
+db.student.insertMany([
+  { name: "Ravi", department: "CSE", marks: 85, age: 21 },
+  { name: "Asha", department: "ISE", marks: 92, age: 22 },
+  { name: "Kiran", department: "ECE", marks: 78, age: 20 },
+  { name: "Deepa", department: "CSE", marks: 66, age: 21 },
+  { name: "Meena", department: "ISE", marks: 88, age: 22 }
+])
+
+db.student.find()
+
+db.student.countDocuments()
+
+db.student.countDocuments({ marks: { $gt: 80 } })
+
+db.student.find().sort({ marks: -1 })
+
+db.student.find().sort({ name: 1, age: -1 })
+
+db.student.find().sort({ marks: -1 }).limit(2)
+
+db.student.find().skip(2).limit(2)
+
+db.student.aggregate([
+  { $group: { _id: "$department", totalStudents: { $sum: 1 } } }
+])
+
+db.student.aggregate([
+  { $group: { _id: "$department", avgMarks: { $avg: "$marks" } } }
+])
+
+db.student.aggregate([
+  { $match: { marks: { $gt: 60 } } },
+  { $group: { _id: "$department", avgMarks: { $avg: "$marks" } } },
+  { $sort: { avgMarks: -1 } },
+  { $limit: 2 }
+])
